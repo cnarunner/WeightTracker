@@ -2,11 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.WeightTrackerBryceJensen" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimary">@android:color/holo_orange_light</item>
         <!-- Set colorSecondary to change background of FAB (backgroundTint) -->
-        <item name="colorSecondary">@color/light_orange</item>
+        <item name="colorSecondary">@android:color/holo_blue_dark</item>
         <!-- Customize colorSecondary to change icon/text of FAB (maps to tint and rippleColor) -->
-        <item name="colorOnSecondary">@android:color/white</item>
+        <item name="colorOnSecondary">@android:color/darker_gray</item>
     </style>
 
     <style name="Theme.WeightTrackerBryceJensen" parent="Base.Theme.WeightTrackerBryceJensen"/>
