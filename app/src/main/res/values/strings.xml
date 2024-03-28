@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">WeightTracker-BryceJensen</string>
+    <string name="addWeight">addWeight</string>
+    <string name="extended_fab_label">WEIGHT</string>
 </resources>
