@@ -2,4 +2,49 @@
     <string name="app_name">WeightTracker-BryceJensen</string>
     <string name="addWeight">addWeight</string>
     <string name="extended_fab_label">WEIGHT</string>
+
+    <string name="weight_Date">04–03–2024</string>
+    <string name="weight_Weight">180.0</string>
+    <string name="weight_PlusMinus">+0.0</string>
+    <string name="image_of_scale">Image of Scale</string>
+
+
+    <string-array name="dates">
+        <item>04–03–2024</item>
+        <item>04–04–2024</item>
+        <item>04–05–2024</item>
+        <item>04–06–2024</item>
+        <item>04–07–2024</item>
+        <item>04–08–2024</item>
+        <item>04–09–2024</item>
+        <item>04–10–2024</item>
+        <item>04–11–2024</item>
+        <item>04–12–2024</item>
+    </string-array>
+
+    <string-array name="weights">
+        <item>180.0</item>
+        <item>180.2</item>
+        <item>181.4</item>
+        <item>182.6</item>
+        <item>181.6</item>
+        <item>187.8</item>
+        <item>184.8</item>
+        <item>182.4</item>
+        <item>181.2</item>
+        <item>179.8</item>
+    </string-array>
+
+    <string-array name="PlusMinus">
+        <item>+0.0</item>
+        <item>+0.2</item>
+        <item>+1.2</item>
+        <item>+1.2</item>
+        <item>-1.0</item>
+        <item>+6.2</item>
+        <item>-3.0</item>
+        <item>-2.4</item>
+        <item>-1.2</item>
+        <item>-1.4</item>
+    </string-array>
 </resources>
