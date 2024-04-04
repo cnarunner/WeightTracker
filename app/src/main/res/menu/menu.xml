@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menuItem_delete"
+        android:title="Delete"
+        android:icon="@drawable/rounded_delete_24"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/menuItem_settings"
+        android:title="Settings"
+        android:icon="@drawable/rounded_settings_24"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/menuItem_edit"
+        android:title="Edit"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/rounded_edit_24"/>
+</menu>
