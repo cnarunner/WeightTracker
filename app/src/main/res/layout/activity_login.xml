@@ -113,8 +113,7 @@
                     android:inputType="textPassword"
                     android:minHeight="48dp"
                     android:textColor="@color/dark_grey_blue"
-                    android:hint="Password"
-                    android:drawableEnd=""/>
+                    android:hint="Password" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
