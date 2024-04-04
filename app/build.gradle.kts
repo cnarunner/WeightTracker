@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId = "com.snhu.cs_360.weighttracker_brycejensen"
-        minSdk = 33
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
