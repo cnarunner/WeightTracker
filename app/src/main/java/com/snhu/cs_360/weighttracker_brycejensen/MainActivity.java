@@ -8,6 +8,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
@@ -28,9 +30,26 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        RecyclerView recyclerView = findViewById(R.id.recyclerWeightData);
+
+        setUpWeightModels();
+
+        // must be after setUpWeightModels()
+        Weight_RecyclerViewAdapter adapter = new Weight_RecyclerViewAdapter(this, weightModels);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void setUpWeightModels() {
+        String[] weights = getResources().getStringArray(R.array.weights);
+        String[] dates = getResources().getStringArray(R.array.dates);
+        String[] PlusMinus = getResources().getStringArray(R.array.PlusMinus);
 
+        for (int i = 0; i<weights.length; i++) {
+            weightModels.add(new WeightModel(weights[i],
+                    dates[i],
+                    PlusMinus[i]));
+        }
     }
 }
