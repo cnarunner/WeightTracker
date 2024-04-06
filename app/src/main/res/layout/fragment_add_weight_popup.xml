@@ -120,6 +120,12 @@
                     android:layout_height="wrap_content"
                     android:text="Add Weight" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_addWeightCancel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cancel" />
+
 
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
