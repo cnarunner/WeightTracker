@@ -4,8 +4,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="dark_grey">#1E2330</color>
 
-    <color name="blue">#0056FF</color>
+    <color name="blue">#1976D2</color>
     <color name="dark_grey_blue">#2F45C1</color>
+
+    <color name="warning_red">#EF5350</color>
 
     <!-- Color palette -->
     <color name="light_blue">#B3E5FC</color>
