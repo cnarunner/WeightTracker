@@ -22,8 +22,8 @@
             android:layout_above="@id/loginCard">
 
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:src="@drawable/outline_monitor_weight_24"
                 android:contentDescription="@string/image_of_scale"
                 app:tint="@color/white"/>
