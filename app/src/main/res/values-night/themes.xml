@@ -1,7 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.WeightTrackerBryceJensen" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.WeightTrackerBryceJensen" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Customize your dark theme here. -->
-         <item name="colorPrimary">@color/dark_grey</item>
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
+        <item name="colorPrimaryVariant">@android:color/holo_blue_dark</item>
+        <item name="colorOnPrimary">@android:color/black</item>
+
+        <!-- Set colorSecondary to change background of FAB (backgroundTint) -->
+        <item name="colorSecondary">@color/blue</item>
+        <item name="colorSecondaryVariant">@color/blue</item>
+        <!-- Customize colorSecondary to change icon/text of FAB (maps to tint and rippleColor) -->
+        <item name="colorOnSecondary">@color/white</item>
+
+        <item name="android:statusBarColor">@android:color/holo_blue_dark</item>
     </style>
+
+    <style name="Theme.WeightTrackerBryceJensen" parent="Base.Theme.WeightTrackerBryceJensen"/>
 </resources>
