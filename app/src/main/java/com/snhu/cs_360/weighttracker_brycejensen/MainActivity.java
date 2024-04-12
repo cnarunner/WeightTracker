@@ -1,8 +1,10 @@
 package com.snhu.cs_360.weighttracker_brycejensen;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,9 +15,14 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+    // For add weight popup
+    Dialog addWeightDialog;
 
     ArrayList<WeightModel> weightModels = new ArrayList<>();
 
@@ -32,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // For add weight popup
+        addWeightDialog = new Dialog(this);
+
+
         RecyclerView recyclerView = findViewById(R.id.recyclerWeightData);
 
         setUpWeightModels();
@@ -42,6 +53,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    public void showAddWeightPopup(View view) {
+        MaterialButton cancelPopup;
+        addWeightDialog.setContentView(R.layout.fragment_add_weight_popup);
+
+        cancelPopup = findViewById(R.id.button_addWeightCancel);
+
+        cancelPopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addWeightDialog.dismiss();
+            }
+        });
+        addWeightDialog.show();
+    }
+
+
 
     private void setUpWeightModels() {
         String[] weights = getResources().getStringArray(R.array.weights);
