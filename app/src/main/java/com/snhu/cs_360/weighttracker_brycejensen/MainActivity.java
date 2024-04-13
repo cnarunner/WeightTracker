@@ -1,6 +1,8 @@
 package com.snhu.cs_360.weighttracker_brycejensen;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -23,7 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
     // For add weight popup
     Dialog addWeightDialog;
+    MaterialButton closeDialog_addWeight;
+    FloatingActionButton FAB_addWeight;
 
+    // For fake data
     ArrayList<WeightModel> weightModels = new ArrayList<>();
 
     @Override
@@ -39,33 +45,39 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // For add weight popup
-        addWeightDialog = new Dialog(this);
-
-
         RecyclerView recyclerView = findViewById(R.id.recyclerWeightData);
 
         setUpWeightModels();
-
         // must be after setUpWeightModels()
         Weight_RecyclerViewAdapter adapter = new Weight_RecyclerViewAdapter(this, weightModels);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
+        // For add weight popup
+        FAB_addWeight = findViewById(R.id.FABaddWeight);
+        FAB_addWeight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAddWeightDialog();
+            }
+        });
     }
 
-    public void showAddWeightPopup(View view) {
-        MaterialButton cancelPopup;
+    public void showAddWeightDialog() {
+        addWeightDialog = new Dialog(this, R.style.DialogStyle);
         addWeightDialog.setContentView(R.layout.fragment_add_weight_popup);
 
-        cancelPopup = findViewById(R.id.button_addWeightCancel);
-
-        cancelPopup.setOnClickListener(new View.OnClickListener() {
+        closeDialog_addWeight = addWeightDialog.findViewById(R.id.button_addWeightCancel);
+        closeDialog_addWeight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addWeightDialog.dismiss();
             }
         });
+
+        addWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         addWeightDialog.show();
     }
 

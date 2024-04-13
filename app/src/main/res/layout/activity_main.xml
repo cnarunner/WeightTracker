@@ -29,8 +29,8 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddWeight"
-        android:onClick="showAddWeightPopup"
+        android:id="@+id/FABaddWeight"
+        android:onClick="showAddWeightDialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
