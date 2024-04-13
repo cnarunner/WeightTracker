@@ -81,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
         addWeightDialog = new Dialog(this, R.style.DialogStyle);
         addWeightDialog.setContentView(R.layout.fragment_add_weight_popup);
 
+        // Create a SimpleDateFormat object with the desired date format pattern "MM-dd-yyyy"
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+        // Get the current date
+        String currentDate = dateFormat.format(new Date());
+
+        // Set the text of the tvDate TextView to display the current date
+        tvDate.setText(currentDate);
+
         closeDialog_addWeight = addWeightDialog.findViewById(R.id.button_addWeightCancel);
         closeDialog_addWeight.setOnClickListener(new View.OnClickListener() {
             @Override
