@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -74,7 +77,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     public void showAddWeightDialog() {
@@ -82,10 +84,11 @@ public class MainActivity extends AppCompatActivity {
         addWeightDialog.setContentView(R.layout.fragment_add_weight_popup);
 
         // Create a SimpleDateFormat object with the desired date format pattern "MM-dd-yyyy"
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
         // Get the current date
         String currentDate = dateFormat.format(new Date());
 
+        tvDate = addWeightDialog.findViewById(R.id.tvDate);
         // Set the text of the tvDate TextView to display the current date
         tvDate.setText(currentDate);
 
@@ -105,7 +108,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        tvDate = addWeightDialog.findViewById(R.id.tvDate);
+        MaterialButton btn_addWeightSubmit = addWeightDialog.findViewById(R.id.button_addWeightSubmit);
+        EditText etWeight = addWeightDialog.findViewById(R.id.etWeight);
+        btn_addWeightSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // addWeight();
+                addWeightDialog.dismiss();
+                String weightText = etWeight.getText().toString();
+                Toast.makeText(MainActivity.this, "Weight Added: " + weightText, Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         addWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         addWeightDialog.show();

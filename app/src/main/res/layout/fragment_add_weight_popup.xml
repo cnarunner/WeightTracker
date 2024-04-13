@@ -84,36 +84,28 @@
                     android:id="@+id/tvSelectWeight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Select Weight:"
+                    android:text="Input Weight:"
                     android:textColor="@color/white" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:id="@+id/tvWeight"
+                    <EditText
+                        android:id="@+id/etWeight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:text="180.0"
+                        android:hint="Input Weight"
+                        android:inputType="numberDecimal"
                         android:textColor="@color/white"
                         android:textSize="24sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/button_selectWeight"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/button_selectWeight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="Select Weight"
-                        android:textColor="@color/white"
-                        android:backgroundTint="@color/dark_grey_blue"
+                        android:textColorHint="@color/light_grey"
+                        android:gravity="center"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.button.MaterialButton
