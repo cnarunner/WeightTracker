@@ -64,11 +64,11 @@
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/select_date_button"
+                        app:layout_constraintEnd_toStartOf="@+id/button_selectDate"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/select_date_button"
+                        android:id="@+id/button_selectDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -100,11 +100,11 @@
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/select_weight_button"
+                        app:layout_constraintEnd_toStartOf="@+id/button_selectWeight"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/select_weight_button"
+                        android:id="@+id/button_selectWeight"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
