@@ -1,5 +1,6 @@
 package com.snhu.cs_360.weighttracker_brycejensen;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +23,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     Dialog addWeightDialog;
     MaterialButton closeDialog_addWeight;
     FloatingActionButton FAB_addWeight;
+
+    // Calendar Stuff
+    Calendar initialDate;
+    TextView tvDate;
 
     // For fake data
     ArrayList<WeightModel> weightModels = new ArrayList<>();
@@ -63,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
                 showAddWeightDialog();
             }
         });
+
+
     }
 
     public void showAddWeightDialog() {
@@ -77,10 +89,39 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        MaterialButton btn_openCalendar = addWeightDialog.findViewById(R.id.button_selectDate);
+        btn_openCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCalendarDialog();
+            }
+        });
+
+        tvDate = addWeightDialog.findViewById(R.id.tvDate);
+
         addWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         addWeightDialog.show();
     }
 
+    private void openCalendarDialog() {
+        initialDate = Calendar.getInstance();
+
+        DatePickerDialog dialogDate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                initialDate.set(year, month, dayOfMonth);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(initialDate.getTime());
+                tvDate.setText(formattedDate);
+            }
+        }, initialDate.get(Calendar.YEAR), initialDate.get(Calendar.MONTH), initialDate.get(Calendar.DAY_OF_MONTH));
+
+        dialogDate.show();
+    }
+
+   
 
 
     private void setUpWeightModels() {
