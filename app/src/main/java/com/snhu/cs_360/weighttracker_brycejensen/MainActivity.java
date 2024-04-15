@@ -31,12 +31,19 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
     // For add weight popup
     Dialog addWeightDialog;
     MaterialButton closeDialog_addWeight;
     FloatingActionButton FAB_addWeight;
+
+    // For edit weight popup
+    Dialog editWeightDialog;
+    MaterialButton closeDialog_editWeight;
+    MaterialButton btn_openEditCalendar;
+    MaterialButton btn_deleteWeight;
+
 
     // Calendar Stuff
     Calendar initialDate;
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     // For fake data
     ArrayList<WeightModel> weightModels = new ArrayList<>();
+    Weight_RecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         setUpWeightModels();
         // must be after setUpWeightModels()
-        Weight_RecyclerViewAdapter adapter = new Weight_RecyclerViewAdapter(this, weightModels);
+        adapter = new Weight_RecyclerViewAdapter(this, weightModels, this);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -143,7 +151,49 @@ public class MainActivity extends AppCompatActivity {
         dialogDate.show();
     }
 
-   
+    public void showEditWeightDialog(final WeightModel weightModel) {
+        editWeightDialog = new Dialog(this, R.style.DialogStyle);
+        editWeightDialog.setContentView(R.layout.fragment_edit_weight_popup);
+
+        TextView edit_tvDate = editWeightDialog.findViewById(R.id.edit_tvDate);
+        EditText edit_etWeight = editWeightDialog.findViewById(R.id.edit_etWeight);
+
+        // Set the values from the WeightModel object
+        edit_tvDate.setText(weightModel.getWeight_Date());
+        edit_etWeight.setText(weightModel.getWeight_Weight());
+
+        closeDialog_editWeight = editWeightDialog.findViewById(R.id.button_editWeightCancel);
+        closeDialog_editWeight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editWeightDialog.dismiss();
+            }
+        });
+
+        btn_openEditCalendar = editWeightDialog.findViewById(R.id.edit_date_button);
+        btn_openEditCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //openEditCalendarDialog();
+            }
+        });
+
+//         btn_deleteWeight = editWeightDialog.findViewById(R.id.button_deleteWeightConfirm);
+//         btn_deleteWeight.setOnClickListener(new View.OnClickListener() {
+//             @Override
+//             public void onClick(View v) {
+//                 weightModel
+//                 removeItem();
+//             }
+//         });
+        editWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        editWeightDialog.show();
+    }
+
+    private void removeItem(int position) {
+        weightModels.remove(position);
+        adapter.notifyItemRemoved(position);
+    }
 
 
     private void setUpWeightModels() {
@@ -163,5 +213,15 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onItemLongClick(int position, WeightModel weightModel) {
+        showEditWeightDialog(weightModel);
     }
 }
