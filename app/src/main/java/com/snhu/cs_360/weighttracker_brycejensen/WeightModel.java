@@ -22,4 +22,16 @@ public class WeightModel {
     public String getWeight_PlusMinus() {
         return weight_PlusMinus;
     }
+
+    public void setWeight_Weight(double weight_Weight) {
+        this.weight_Weight = String.valueOf(weight_Weight);
+    }
+
+    public void setWeight_Date(String weight_Date) {
+        this.weight_Date = weight_Date;
+    }
+
+    public void setWeight_PlusMinus(String weight_PlusMinus) {
+        this.weight_PlusMinus = weight_PlusMinus;
+    }
 }
