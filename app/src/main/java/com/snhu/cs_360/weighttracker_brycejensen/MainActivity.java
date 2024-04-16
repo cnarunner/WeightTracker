@@ -210,6 +210,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 // Notify the RecyclerView adapter about the data change
                 adapter.notifyItemChanged(position);
                 editWeightDialog.dismiss();
+                String weightText = edit_etWeight.getText().toString();
+                Toast.makeText(MainActivity.this, "Weight Updated: " + weightText, Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -217,7 +219,12 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
          btn_deleteWeight.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
-                // removeItem();
+                 weightModels.remove(position);
+                 editWeightDialog.dismiss();
+                 adapter.notifyItemRemoved(position);
+
+                 String deleteText = "Deleted Weight";
+                 Toast.makeText(MainActivity.this, deleteText, Toast.LENGTH_LONG).show();
              }
          });
         editWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -239,11 +246,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         }, dateToEdit.get(Calendar.YEAR), dateToEdit.get(Calendar.MONTH), dateToEdit.get(Calendar.DAY_OF_MONTH));
 
         dialogDate.show();
-    }
-
-    private void removeItem(int position) {
-        weightModels.remove(position);
-        adapter.notifyItemRemoved(position);
     }
 
 
