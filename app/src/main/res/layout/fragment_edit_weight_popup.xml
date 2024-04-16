@@ -73,6 +73,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:text="Edit Date"
+                        android:backgroundTint="@color/dark_grey_blue"
+                        android:textColor="@color/white"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -118,13 +120,17 @@
                     android:id="@+id/button_editWeightConfirm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Confirm Edit" />
+                    android:text="Confirm Edit"
+                    android:backgroundTint="@color/dark_grey_blue"
+                    android:textColor="@color/white"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/button_editWeightCancel"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Cancel" />
+                    android:text="Cancel"
+                    android:backgroundTint="@color/dark_grey_blue"
+                    android:textColor="@color/white"/>
 
 
             </LinearLayout>
