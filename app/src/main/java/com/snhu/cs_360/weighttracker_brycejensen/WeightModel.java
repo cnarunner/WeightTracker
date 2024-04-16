@@ -5,10 +5,10 @@ public class WeightModel {
     String weight_Date;
     String weight_PlusMinus;
 
-    public WeightModel(String weight_Weight, String weight_Date, String weight_PlusMinus) {
+    public WeightModel(String weight_Weight, String weight_Date) {
         this.weight_Weight = weight_Weight;
         this.weight_Date = weight_Date;
-        this.weight_PlusMinus = weight_PlusMinus;
+        this.weight_PlusMinus = "";
     }
 
     public String getWeight_Weight() {

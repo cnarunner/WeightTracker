@@ -35,16 +35,16 @@
         <item>179.8</item>
     </string-array>
 
-    <string-array name="PlusMinus">
-        <item>+0.0</item>
-        <item>+0.2</item>
-        <item>+1.2</item>
-        <item>+1.2</item>
-        <item>-1.0</item>
-        <item>+6.2</item>
-        <item>-3.0</item>
-        <item>-2.4</item>
-        <item>-1.2</item>
-        <item>-1.4</item>
-    </string-array>
+<!--    <string-array name="PlusMinus">-->
+<!--        <item>+0.0</item>-->
+<!--        <item>+0.2</item>-->
+<!--        <item>+1.2</item>-->
+<!--        <item>+1.2</item>-->
+<!--        <item>-1.0</item>-->
+<!--        <item>+6.2</item>-->
+<!--        <item>-3.0</item>-->
+<!--        <item>-2.4</item>-->
+<!--        <item>-1.2</item>-->
+<!--        <item>-1.4</item>-->
+<!--    </string-array>-->
 </resources>

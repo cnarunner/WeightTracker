@@ -231,33 +231,57 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         editWeightDialog.show();
     }
 
-    private void openEditCalendarDialog(Calendar dateToEdit) {
+    private void updatePlusMinus(int position) {
+        WeightModel currentWeight = weightModels.get(position);
+        double currentWeightValue = Double.parseDouble(currentWeight.getWeight_Weight());
 
-        DatePickerDialog dialogDate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        // Update the current weight's PlusMinus
+        if (position > 0) {
+            WeightModel previousWeight = weightModels.get(position - 1);
+            double previousWeightValue = Double.parseDouble(previousWeight.getWeight_Weight());
+            double difference = currentWeightValue - previousWeightValue;
+            String plusMinus = String.format("%.1f", difference);
+            currentWeight.setWeight_PlusMinus(plusMinus);
+        } else {
+            currentWeight.setWeight_PlusMinus("+0.0");
+        }
 
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                initialDate.set(year, month, dayOfMonth);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
-                String formattedDate = dateFormat.format(initialDate.getTime());
-                edit_tvDate.setText(formattedDate);
-            }
-        }, dateToEdit.get(Calendar.YEAR), dateToEdit.get(Calendar.MONTH), dateToEdit.get(Calendar.DAY_OF_MONTH));
-
-        dialogDate.show();
+        // Update the next weight's PlusMinus (if it exists)
+        if (position < weightModels.size() - 1) {
+            WeightModel nextWeight = weightModels.get(position + 1);
+            double nextWeightValue = Double.parseDouble(nextWeight.getWeight_Weight());
+            double difference = nextWeightValue - currentWeightValue;
+            String plusMinus = String.format("%.1f", difference);
+            nextWeight.setWeight_PlusMinus(plusMinus);
+        }
     }
 
+    private void openEditCalendarDialog(Calendar dateToEdit) {
+        openCalendarDialog(dateToEdit, edit_tvDate);
+    }
 
     private void setUpWeightModels() {
         String[] weights = getResources().getStringArray(R.array.weights);
         String[] dates = getResources().getStringArray(R.array.dates);
-        String[] PlusMinus = getResources().getStringArray(R.array.PlusMinus);
+        List<WeightModel> weightModelList = new ArrayList<>();
 
-        for (int i = 0; i<weights.length; i++) {
-            weightModels.add(new WeightModel(weights[i],
-                    dates[i],
-                    PlusMinus[i]));
+        for (int i = 0; i < weights.length; i++) {
+            String weight = weights[i];
+            String date = dates[i];
+            WeightModel weightModel = new WeightModel(weight, date);
+
+            if (i > 0) {
+                double currentWeight = Double.parseDouble(weight);
+                double previousWeight = Double.parseDouble(weightModels.get(i - 1).getWeight_Weight());
+                double difference = currentWeight - previousWeight;
+                String plusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
+                weightModel.setWeight_PlusMinus(plusMinus);
+            } else {
+                weightModel.setWeight_PlusMinus("+0.0");
+            }
+
+            weightModels.add(weightModel);
+
         }
     }
 
