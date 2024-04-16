@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,9 +41,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     // For edit weight popup
     private Dialog editWeightDialog;
+    private TextView edit_tvDate;
     private MaterialButton closeDialog_editWeight;
     private MaterialButton btn_openEditCalendar;
-    private MaterialButton btn_EditWeightSubmit;
+    private MaterialButton btn_editWeightSubmit;
     private MaterialButton btn_editCancel;
     private MaterialButton btn_deleteWeight;
     private Calendar dateToEdit;
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         });
 
+        // For addWeight and editWeight
+        initialDate = Calendar.getInstance();
     }
 
     public void showAddWeightDialog() {
@@ -136,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     private void openCalendarDialog() {
-        initialDate = Calendar.getInstance();
 
         DatePickerDialog dialogDate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
 
@@ -153,16 +156,34 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         dialogDate.show();
     }
 
-    public void showEditWeightDialog(final WeightModel weightModel) {
+    public void showEditWeightDialog(WeightModel weightModel, int position) {
         editWeightDialog = new Dialog(this, R.style.DialogStyle);
         editWeightDialog.setContentView(R.layout.fragment_edit_weight_popup);
 
-        TextView edit_tvDate = editWeightDialog.findViewById(R.id.edit_tvDate);
+        edit_tvDate = editWeightDialog.findViewById(R.id.edit_tvDate);
         EditText edit_etWeight = editWeightDialog.findViewById(R.id.edit_etWeight);
+        btn_deleteWeight = editWeightDialog.findViewById(R.id.button_deleteWeightConfirm);
+
+
+        WeightModel weight = weightModels.get(position);
 
         // Set the values from the WeightModel object
         edit_tvDate.setText(weightModel.getWeight_Date());
         edit_etWeight.setText(weightModel.getWeight_Weight());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+        try {
+            Date date = dateFormat.parse(weightModel.getWeight_Date());
+            dateToEdit = Calendar.getInstance();
+            dateToEdit.setTime(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (dateToEdit == null) {
+            // Handle the case where dateToEdit is null
+            // For example, you could use the current date as a fallback
+            dateToEdit = Calendar.getInstance();
+        }
 
         closeDialog_editWeight = editWeightDialog.findViewById(R.id.button_editWeightCancel);
         closeDialog_editWeight.setOnClickListener(new View.OnClickListener() {
@@ -176,20 +197,48 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         btn_openEditCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //openEditCalendarDialog();
+                openEditCalendarDialog(dateToEdit);
             }
         });
 
-//         btn_deleteWeight = editWeightDialog.findViewById(R.id.button_deleteWeightConfirm);
-//         btn_deleteWeight.setOnClickListener(new View.OnClickListener() {
-//             @Override
-//             public void onClick(View v) {
-//                 weightModel
-//                 removeItem();
-//             }
-//         });
+        btn_editWeightSubmit = editWeightDialog.findViewById(R.id.button_editWeightConfirm);
+        btn_editWeightSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Update the weight data in the dataset
+                weightModel.setWeight_Weight(Double.parseDouble(edit_etWeight.getText().toString()));
+                // Notify the RecyclerView adapter about the data change
+                adapter.notifyItemChanged(position);
+                editWeightDialog.dismiss();
+            }
+        });
+
+         btn_deleteWeight = editWeightDialog.findViewById(R.id.button_deleteWeightConfirm);
+         btn_deleteWeight.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                // removeItem();
+             }
+         });
         editWeightDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         editWeightDialog.show();
+    }
+
+    private void openEditCalendarDialog(Calendar dateToEdit) {
+
+        DatePickerDialog dialogDate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                initialDate.set(year, month, dayOfMonth);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(initialDate.getTime());
+                edit_tvDate.setText(formattedDate);
+            }
+        }, dateToEdit.get(Calendar.YEAR), dateToEdit.get(Calendar.MONTH), dateToEdit.get(Calendar.DAY_OF_MONTH));
+
+        dialogDate.show();
     }
 
     private void removeItem(int position) {
@@ -224,6 +273,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemLongClick(int position, WeightModel weightModel) {
-        showEditWeightDialog(weightModel);
+        showEditWeightDialog(weightModel, position);
     }
 }
