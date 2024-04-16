@@ -34,24 +34,26 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
     // For add weight popup
-    Dialog addWeightDialog;
-    MaterialButton closeDialog_addWeight;
-    FloatingActionButton FAB_addWeight;
+    private Dialog addWeightDialog;
+    private MaterialButton closeDialog_addWeight;
+    private FloatingActionButton FAB_addWeight;
 
     // For edit weight popup
-    Dialog editWeightDialog;
-    MaterialButton closeDialog_editWeight;
-    MaterialButton btn_openEditCalendar;
-    MaterialButton btn_deleteWeight;
-
+    private Dialog editWeightDialog;
+    private MaterialButton closeDialog_editWeight;
+    private MaterialButton btn_openEditCalendar;
+    private MaterialButton btn_EditWeightSubmit;
+    private MaterialButton btn_editCancel;
+    private MaterialButton btn_deleteWeight;
+    private Calendar dateToEdit;
 
     // Calendar Stuff
-    Calendar initialDate;
-    TextView tvDate;
+    private Calendar initialDate;
+    private TextView tvDate;
 
     // For fake data
-    ArrayList<WeightModel> weightModels = new ArrayList<>();
-    Weight_RecyclerViewAdapter adapter;
+    private ArrayList<WeightModel> weightModels = new ArrayList<>();
+    private Weight_RecyclerViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
