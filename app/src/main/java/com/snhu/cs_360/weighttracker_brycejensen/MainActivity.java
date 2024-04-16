@@ -30,33 +30,32 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-    // For add weight popup
-    private Dialog addWeightDialog;
-    private MaterialButton closeDialog_addWeight;
-    private FloatingActionButton FAB_addWeight;
+// For add weight popup
+private Dialog addWeightDialog;
+private MaterialButton closeDialog_addWeight;
+private FloatingActionButton FAB_addWeight;
+private TextView tvDate;
 
-    // For edit weight popup
-    private Dialog editWeightDialog;
-    private TextView edit_tvDate;
-    private MaterialButton closeDialog_editWeight;
-    private MaterialButton btn_openEditCalendar;
-    private MaterialButton btn_editWeightSubmit;
-    private MaterialButton btn_editCancel;
-    private MaterialButton btn_deleteWeight;
-    private Calendar dateToEdit;
+// For edit weight popup
+private Dialog editWeightDialog;
+private TextView edit_tvDate;
+private MaterialButton closeDialog_editWeight;
+private MaterialButton btn_openEditCalendar;
+private MaterialButton btn_editWeightSubmit;
+private MaterialButton btn_deleteWeight;
+private Calendar dateToEdit;
 
-    // Calendar Stuff
-    private Calendar initialDate;
-    private TextView tvDate;
+// Calendar Stuff
+private Calendar initialDate;
 
-    // For fake data
-    private ArrayList<WeightModel> weightModels = new ArrayList<>();
-    private Weight_RecyclerViewAdapter adapter;
-
+// For fake data
+private ArrayList<WeightModel> weightModels = new ArrayList<>();
+private Weight_RecyclerViewAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         addWeightDialog.setContentView(R.layout.fragment_add_weight_popup);
 
         // Create a SimpleDateFormat object with the desired date format pattern "MM-dd-yyyy"
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
         // Get the current date
         String currentDate = dateFormat.format(new Date());
 
@@ -118,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         btn_openCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openCalendarDialog();
+                openInitialCalendarDialog();
             }
         });
 
@@ -127,10 +126,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         btn_addWeightSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // addWeight();
-                addWeightDialog.dismiss();
                 String weightText = etWeight.getText().toString();
-                Toast.makeText(MainActivity.this, "Weight Added: " + weightText, Toast.LENGTH_SHORT).show();
+                String dateText = tvDate.getText().toString();
+                WeightModel newWeight = new WeightModel(weightText, dateText);
+                addWeight(newWeight);
+                addWeightDialog.dismiss();
+                weightText = etWeight.getText().toString();
+                Toast.makeText(MainActivity.this, "Weight Added: " + weightText, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -139,21 +141,40 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         addWeightDialog.show();
     }
 
-    private void openCalendarDialog() {
+    private void addWeight(WeightModel newWeight) {
+        // Add the new weight to the list
+        weightModels.add(newWeight);
 
+        // Calculate the plusMinus value
+        if (weightModels.size() > 1) {
+            WeightModel previousWeight = weightModels.get(weightModels.size() - 2);
+            float currentWeight = Float.parseFloat(newWeight.getWeight_Weight());
+            float prevWeight = Float.parseFloat(previousWeight.getWeight_Weight());
+            float difference = currentWeight - prevWeight;
+            newWeight.weight_PlusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
+        }
+
+        // Update the RecyclerView adapter with the new list
+        adapter.notifyDataSetChanged();
+    }
+
+    private void openCalendarDialog(Calendar dateToSet, TextView textView) {
         DatePickerDialog dialogDate = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-
-                initialDate.set(year, month, dayOfMonth);
-                SimpleDateFormat dateFormat = new SimpleDateFormat("MM—dd—yyyy", Locale.getDefault());
-                String formattedDate = dateFormat.format(initialDate.getTime());
-                tvDate.setText(formattedDate);
+                dateToSet.set(year, month, dayOfMonth);
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+                String formattedDate = dateFormat.format(dateToSet.getTime());
+                textView.setText(formattedDate);
             }
-        }, initialDate.get(Calendar.YEAR), initialDate.get(Calendar.MONTH), initialDate.get(Calendar.DAY_OF_MONTH));
-
+        }, dateToSet.get(Calendar.YEAR), dateToSet.get(Calendar.MONTH), dateToSet.get(Calendar.DAY_OF_MONTH));
+    
         dialogDate.show();
+    }
+    
+    
+    private void openInitialCalendarDialog() {
+        openCalendarDialog(initialDate, tvDate);
     }
 
     public void showEditWeightDialog(WeightModel weightModel, int position) {
@@ -207,11 +228,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             public void onClick(View v) {
                 // Update the weight data in the dataset
                 weightModel.setWeight_Weight(Double.parseDouble(edit_etWeight.getText().toString()));
+
+                // Update the date data in the dataset
+                SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy", Locale.getDefault());
+                String newDateString = dateFormat.format(dateToEdit.getTime());
+                weightModel.setWeight_Date(newDateString);
+
+                // Update the PlusMinus values
+                updatePlusMinus(position);
+
                 // Notify the RecyclerView adapter about the data change
                 adapter.notifyItemChanged(position);
                 editWeightDialog.dismiss();
                 String weightText = edit_etWeight.getText().toString();
-                Toast.makeText(MainActivity.this, "Weight Updated: " + weightText, Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Weight Updated: " + weightText, Toast.LENGTH_LONG).show();
             }
         });
 
@@ -294,7 +324,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
     @Override
     public void onItemClick(int position) {
-
+        String toEditText = "Hold on a weight to edit.";
+        Toast.makeText(MainActivity.this, toEditText, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -302,3 +333,4 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         showEditWeightDialog(weightModel, position);
     }
 }
+
