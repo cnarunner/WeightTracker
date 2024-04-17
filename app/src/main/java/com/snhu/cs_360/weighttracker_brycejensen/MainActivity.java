@@ -35,27 +35,28 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
 
-// For add weight popup
-private Dialog addWeightDialog;
-private MaterialButton closeDialog_addWeight;
-private FloatingActionButton FAB_addWeight;
-private TextView tvDate;
+    // For add weight popup
+    private Dialog addWeightDialog;
+    private MaterialButton closeDialog_addWeight;
+    private FloatingActionButton FAB_addWeight;
+    private TextView tvDate;
 
-// For edit weight popup
-private Dialog editWeightDialog;
-private TextView edit_tvDate;
-private MaterialButton closeDialog_editWeight;
-private MaterialButton btn_openEditCalendar;
-private MaterialButton btn_editWeightSubmit;
-private MaterialButton btn_deleteWeight;
-private Calendar dateToEdit;
+    // For edit weight popup
+    private Dialog editWeightDialog;
+    private TextView edit_tvDate;
+    private MaterialButton closeDialog_editWeight;
+    private MaterialButton btn_openEditCalendar;
+    private MaterialButton btn_editWeightSubmit;
+    private MaterialButton btn_deleteWeight;
+    private Calendar dateToEdit;
 
-// Calendar Stuff
-private Calendar initialDate;
+    // Calendar Stuff
+    private Calendar initialDate;
 
-// For fake data
-private ArrayList<WeightModel> weightModels = new ArrayList<>();
-private Weight_RecyclerViewAdapter adapter;
+    // For fake data
+    private ArrayList<WeightModel> weightModels = new ArrayList<>();
+    private Weight_RecyclerViewAdapter adapter;
+    private WeightDAO weightDAO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,11 +70,15 @@ private Weight_RecyclerViewAdapter adapter;
             return insets;
         });
 
+        weightDAO = new WeightDAO(this);
+
         RecyclerView recyclerView = findViewById(R.id.recyclerWeightData);
 
-        setUpWeightModels();
+        // setUpWeightModels();
         // must be after setUpWeightModels()
         adapter = new Weight_RecyclerViewAdapter(this, weightModels, this);
+
+        loadWeightsFromDatabase();
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -128,7 +133,8 @@ private Weight_RecyclerViewAdapter adapter;
             public void onClick(View v) {
                 String weightText = etWeight.getText().toString();
                 String dateText = tvDate.getText().toString();
-                WeightModel newWeight = new WeightModel(weightText, dateText);
+                String plusMinus = "";
+                WeightModel newWeight = new WeightModel(weightText, dateText, plusMinus);
                 addWeight(newWeight);
                 addWeightDialog.dismiss();
                 weightText = etWeight.getText().toString();
@@ -143,19 +149,19 @@ private Weight_RecyclerViewAdapter adapter;
 
     private void addWeight(WeightModel newWeight) {
         // Add the new weight to the list
+        weightDAO.insert(newWeight);
         weightModels.add(newWeight);
 
+
         // Calculate the plusMinus value
-        if (weightModels.size() > 1) {
-            WeightModel previousWeight = weightModels.get(weightModels.size() - 2);
-            float currentWeight = Float.parseFloat(newWeight.getWeight_Weight());
-            float prevWeight = Float.parseFloat(previousWeight.getWeight_Weight());
-            float difference = currentWeight - prevWeight;
-            newWeight.weight_PlusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
+        newWeight.calculatePlusMinus(weightModels, weightModels.size() - 1);
+        for (int i = weightModels.size() - 1; i < weightModels.size(); i++) {
+            weightModels.get(i).calculatePlusMinus(weightModels, i);
         }
 
         // Update the RecyclerView adapter with the new list
-        adapter.notifyDataSetChanged();
+        adapter.notifyItemInserted(weightModels.size() - 1);
+        loadWeightsFromDatabase();
     }
 
     private void openCalendarDialog(Calendar dateToSet, TextView textView) {
@@ -234,11 +240,20 @@ private Weight_RecyclerViewAdapter adapter;
                 String newDateString = dateFormat.format(dateToEdit.getTime());
                 weightModel.setWeight_Date(newDateString);
 
-                // Update the PlusMinus values
-                updatePlusMinus(position);
+                // Update the weight entry in the database
+                weightDAO.update(weightModel);
+
+                // Calculate the "plus minus" value for the updated weight and subsequent weights
+                int updatedIndex = weightModels.indexOf(weightModel);
+                weightModel.calculatePlusMinus(weightModels, updatedIndex);
+                for (int i = updatedIndex + 1; i < weightModels.size(); i++) {
+                    weightModels.get(i).calculatePlusMinus(weightModels, i);
+                }
+
+                loadWeightsFromDatabase();
 
                 // Notify the RecyclerView adapter about the data change
-                adapter.notifyItemChanged(position);
+                //adapter.notifyItemChanged(position);
                 editWeightDialog.dismiss();
                 String weightText = edit_etWeight.getText().toString();
                 Toast.makeText(MainActivity.this, "Weight Updated: " + weightText, Toast.LENGTH_LONG).show();
@@ -249,9 +264,20 @@ private Weight_RecyclerViewAdapter adapter;
          btn_deleteWeight.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
+                 int deletedIndex = weightModels.indexOf(weightModel);
+
+                 weightDAO.delete(weightModel.getWeight_Id());
+
                  weightModels.remove(position);
                  editWeightDialog.dismiss();
                  adapter.notifyItemRemoved(position);
+
+                 // Update the "plus minus" values for the remaining weights
+                 for (int i = deletedIndex; i < weightModels.size(); i++) {
+                     weightModels.get(i).calculatePlusMinus(weightModels, i);
+                 }
+
+                 loadWeightsFromDatabase();
 
                  String deleteText = "Deleted Weight";
                  Toast.makeText(MainActivity.this, deleteText, Toast.LENGTH_LONG).show();
@@ -261,57 +287,48 @@ private Weight_RecyclerViewAdapter adapter;
         editWeightDialog.show();
     }
 
-    private void updatePlusMinus(int position) {
-        WeightModel currentWeight = weightModels.get(position);
-        double currentWeightValue = Double.parseDouble(currentWeight.getWeight_Weight());
-
-        // Update the current weight's PlusMinus
-        if (position > 0) {
-            WeightModel previousWeight = weightModels.get(position - 1);
-            double previousWeightValue = Double.parseDouble(previousWeight.getWeight_Weight());
-            double difference = currentWeightValue - previousWeightValue;
-            String plusMinus = String.format("%.1f", difference);
-            currentWeight.setWeight_PlusMinus(plusMinus);
-        } else {
-            currentWeight.setWeight_PlusMinus("+0.0");
-        }
-
-        // Update the next weight's PlusMinus (if it exists)
-        if (position < weightModels.size() - 1) {
-            WeightModel nextWeight = weightModels.get(position + 1);
-            double nextWeightValue = Double.parseDouble(nextWeight.getWeight_Weight());
-            double difference = nextWeightValue - currentWeightValue;
-            String plusMinus = String.format("%.1f", difference);
-            nextWeight.setWeight_PlusMinus(plusMinus);
-        }
-    }
 
     private void openEditCalendarDialog(Calendar dateToEdit) {
         openCalendarDialog(dateToEdit, edit_tvDate);
     }
 
-    private void setUpWeightModels() {
-        String[] weights = getResources().getStringArray(R.array.weights);
-        String[] dates = getResources().getStringArray(R.array.dates);
-        List<WeightModel> weightModelList = new ArrayList<>();
+//    private void setUpWeightModels() {
+//        String[] weights = getResources().getStringArray(R.array.weights);
+//        String[] dates = getResources().getStringArray(R.array.dates);
+//        List<WeightModel> weightModelList = new ArrayList<>();
+//
+//        for (int i = 0; i < weights.length; i++) {
+//            String weight = weights[i];
+//            String date = dates[i];
+//            WeightModel weightModel = new WeightModel(weight, date);
+//
+//            if (i > 0) {
+//                double currentWeight = Double.parseDouble(weight);
+//                double previousWeight = Double.parseDouble(weightModels.get(i - 1).getWeight_Weight());
+//                double difference = currentWeight - previousWeight;
+//                String plusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
+//                weightModel.setWeight_PlusMinus(plusMinus);
+//            } else {
+//                weightModel.setWeight_PlusMinus("+0.0");
+//            }
+//
+//            weightModels.add(weightModel);
+//
+//        }
+//    }
 
-        for (int i = 0; i < weights.length; i++) {
-            String weight = weights[i];
-            String date = dates[i];
-            WeightModel weightModel = new WeightModel(weight, date);
+    private void loadWeightsFromDatabase() {
+        weightModels.clear(); // Clear the existing list
+        List<WeightModel> weights = weightDAO.getAllWeights();
+        weightModels.addAll(weights);
+        adapter.notifyDataSetChanged();
 
-            if (i > 0) {
-                double currentWeight = Double.parseDouble(weight);
-                double previousWeight = Double.parseDouble(weightModels.get(i - 1).getWeight_Weight());
-                double difference = currentWeight - previousWeight;
-                String plusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
-                weightModel.setWeight_PlusMinus(plusMinus);
-            } else {
-                weightModel.setWeight_PlusMinus("+0.0");
-            }
-
-            weightModels.add(weightModel);
-
+        // Show or hide the empty message based on the size of the weightModels list
+        TextView tvEmptyMessage = findViewById(R.id.tvEmptyMessage);
+        if (weightModels.isEmpty()) {
+            tvEmptyMessage.setVisibility(View.VISIBLE);
+        } else {
+            tvEmptyMessage.setVisibility(View.GONE);
         }
     }
 
@@ -325,7 +342,7 @@ private Weight_RecyclerViewAdapter adapter;
     @Override
     public void onItemClick(int position) {
         String toEditText = "Hold on a weight to edit.";
-        Toast.makeText(MainActivity.this, toEditText, Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, toEditText, Toast.LENGTH_SHORT).show();
     }
 
     @Override
