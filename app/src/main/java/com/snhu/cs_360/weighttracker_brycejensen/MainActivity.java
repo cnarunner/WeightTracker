@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private Weight_RecyclerViewAdapter adapter;
     private WeightDAO weightDAO;
     private String loggedInUsername;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -355,6 +357,41 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         MenuInflater inflater=getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String itemTitle = item.getTitle().toString();
+        switch (itemTitle) {
+            case "Log Out":
+                // Perform logout operation
+                logoutUser();
+                return true;
+
+            case "Settings":
+                // Open settings dialog
+                showSettingsDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void logoutUser() {
+        // Start the LoginActivity
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    private void showSettingsDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.fragment_settings);
+
+
+
+        dialog.show();
     }
 
     @Override

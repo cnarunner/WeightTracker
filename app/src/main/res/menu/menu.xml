@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/menuItem_LogOut"
+        android:title="Log Out"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/menuItem_settings"
         android:title="Settings"
         android:icon="@drawable/rounded_settings_24"
