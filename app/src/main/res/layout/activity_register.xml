@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background">
-<!--    tools:context=".MainActivity"-->
+    <!--    tools:context=".MainActivity"-->
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,30 +13,30 @@
         android:background="@color/white"
         android:alpha="0.01"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="28dp"
-            android:gravity="center"
-            android:layout_above="@id/loginCard">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center"
+        android:layout_above="@id/loginCard">
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/outline_monitor_weight_24"
-                android:contentDescription="@string/image_of_scale"
-                app:tint="@color/white"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/outline_monitor_weight_24"
+            android:contentDescription="@string/image_of_scale"
+            app:tint="@color/white"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="Weight Tracker"
-                android:textColor="@color/white"
-                android:textSize="48sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="Weight Tracker"
+            android:textColor="@color/white"
+            android:textSize="48sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 
     <androidx.cardview.widget.CardView
@@ -67,16 +67,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Please login"
+                android:text="Please create an account."
                 android:textColor="@color/dark_grey_blue"
                 android:alpha="0.7"
                 android:layout_marginBottom="32dp"/>
 
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Email Address"-->
-<!--                android:textColor="@color/dark_grey_blue"/>-->
+            <!--            <TextView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Email Address"-->
+            <!--                android:textColor="@color/dark_grey_blue"/>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username_text_input_layout"
@@ -84,13 +84,14 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/editTextUsername"
+                    android:id="@+id/editTextCreateUsername"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minHeight="48dp"
-                    android:inputType="textPersonName"
                     android:textColor="@color/dark_grey_blue"
-                    android:hint="Username" />
+                    android:inputType="textPersonName"
+                    android:hint="Username"
+                    android:textColorHint="@color/light_grey"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -101,13 +102,32 @@
                 app:passwordToggleEnabled="true">
 
                 <EditText
-                    android:id="@+id/editTextPassword"
+                    android:id="@+id/editTextCreatePassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:minHeight="48dp"
                     android:textColor="@color/dark_grey_blue"
-                    android:hint="Password" />
+                    android:hint="Password"
+                    android:textColorHint="@color/light_grey"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/retype_password_text_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:passwordToggleEnabled="true">
+
+                <EditText
+                    android:id="@+id/editTextRetypePassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:minHeight="48dp"
+                    android:textColor="@color/dark_grey_blue"
+                    android:hint="Retype Password"
+                    android:textColorHint="@color/light_grey"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -119,7 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:text="I forgot my password"
+                    android:text="I forgot my passsword"
                     android:layout_marginBottom="24dp"
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
@@ -127,20 +147,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_login"
+                    android:id="@+id/button_alreadyHaveAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:text="Login"
-                    android:layout_marginEnd="10dp"
+                    android:text="Already have an account?"
                     android:textColor="@color/dark_grey_blue"
                     app:cornerRadius="32dp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_createAccountActivity"
+                    android:id="@+id/button_createAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:text="Create account"

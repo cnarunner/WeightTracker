@@ -7,11 +7,13 @@ public class WeightModel {
     String weight_Weight;
     String weight_Date;
     String weight_PlusMinus;
+    String weight_Username;
 
-    public WeightModel(String weight_Weight, String weight_Date, String weight_PlusMinus) {
+    public WeightModel(String weight_Weight, String weight_Date, String weight_PlusMinus, String weight_Username) {
         this.weight_Weight = weight_Weight;
         this.weight_Date = weight_Date;
         this.weight_PlusMinus = "";
+        this.weight_Username = weight_Username;
     }
 
     public String getWeight_Weight() {
@@ -30,6 +32,10 @@ public class WeightModel {
         return weight_Id;
     }
 
+    public String getWeight_Username() {
+        return weight_Username;
+    }
+
 
     public void setWeight_Id(int weight_Id) {
         this.weight_Id = weight_Id;
@@ -45,6 +51,10 @@ public class WeightModel {
 
     public void setWeight_PlusMinus(String weight_PlusMinus) {
         this.weight_PlusMinus = weight_PlusMinus;
+    }
+
+    public void setWeight_Username(String weight_Username) {
+        this.weight_Username = weight_Username;
     }
 
     public void calculatePlusMinus(ArrayList<WeightModel> weightModels, int currentIndex) {

@@ -22,6 +22,8 @@ public class WeightDAO {
         values.put(WeightDB.COLUMN_WEIGHT, weight.getWeight_Weight());
         values.put(WeightDB.COLUMN_DATE, weight.getWeight_Date());
         values.put(WeightDB.COLUMN_PLUS_MINUS, weight.getWeight_PlusMinus());
+        values.put(WeightDB.COLUMN_USERNAME, weight.getWeight_Username());
+
         database.insert(WeightDB.TABLE_WEIGHTS, null, values);
     }
 
@@ -51,7 +53,9 @@ public class WeightDAO {
                 String weight = cursor.getString(cursor.getColumnIndexOrThrow(WeightDB.COLUMN_WEIGHT));
                 String date = cursor.getString(cursor.getColumnIndexOrThrow(WeightDB.COLUMN_DATE));
                 String plusMinus = cursor.getString(cursor.getColumnIndexOrThrow(WeightDB.COLUMN_PLUS_MINUS));
-                WeightModel weightModel = new WeightModel(weight, date, plusMinus);
+                String username = cursor.getString(cursor.getColumnIndexOrThrow(WeightDB.COLUMN_USERNAME));
+
+                WeightModel weightModel = new WeightModel(weight, date, plusMinus, username);
                 weightModel.setWeight_Id(id);
                 weightList.add(weightModel);
             } while (cursor.moveToNext());

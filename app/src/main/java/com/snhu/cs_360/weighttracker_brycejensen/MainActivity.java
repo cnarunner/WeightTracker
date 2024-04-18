@@ -2,6 +2,7 @@ package com.snhu.cs_360.weighttracker_brycejensen;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private ArrayList<WeightModel> weightModels = new ArrayList<>();
     private Weight_RecyclerViewAdapter adapter;
     private WeightDAO weightDAO;
+    private String loggedInUsername;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Get the logged-in username from the Intent or SharedPreferences
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("username")) {
+            loggedInUsername = intent.getStringExtra("username");
+        }
+
 
         weightDAO = new WeightDAO(this);
 
@@ -134,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 String weightText = etWeight.getText().toString();
                 String dateText = tvDate.getText().toString();
                 String plusMinus = "";
-                WeightModel newWeight = new WeightModel(weightText, dateText, plusMinus);
+                WeightModel newWeight = new WeightModel(weightText, dateText, plusMinus, loggedInUsername);
                 addWeight(newWeight);
                 addWeightDialog.dismiss();
                 weightText = etWeight.getText().toString();
@@ -148,10 +157,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     private void addWeight(WeightModel newWeight) {
+        newWeight.setWeight_Username(loggedInUsername);
+
         // Add the new weight to the list
         weightDAO.insert(newWeight);
         weightModels.add(newWeight);
-
 
         // Calculate the plusMinus value
         newWeight.calculatePlusMinus(weightModels, weightModels.size() - 1);
@@ -320,7 +330,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private void loadWeightsFromDatabase() {
         weightModels.clear(); // Clear the existing list
         List<WeightModel> weights = weightDAO.getAllWeights();
-        weightModels.addAll(weights);
+        //weightModels.addAll(weights);
+
+        // Filter the weights by the logged-in username
+        for (WeightModel weight : weights) {
+            if (weight.getWeight_Username().equals(loggedInUsername)) {
+                weightModels.add(weight);
+            }
+        }
+
         adapter.notifyDataSetChanged();
 
         // Show or hide the empty message based on the size of the weightModels list
