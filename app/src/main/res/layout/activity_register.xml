@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="28dp"
+        android:padding="10dp"
         android:gravity="center"
         android:layout_above="@id/loginCard">
 
@@ -91,6 +91,23 @@
                     android:textColor="@color/dark_grey_blue"
                     android:inputType="textPersonName"
                     android:hint="Username"
+                    android:textColorHint="@color/light_grey"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneNumber_input_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/editTextPhoneNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="48dp"
+                    android:textColor="@color/dark_grey_blue"
+                    android:inputType="phone"
+                    android:hint="Phone Number"
+                    android:visibility="gone"
                     android:textColorHint="@color/light_grey"/>
 
             </com.google.android.material.textfield.TextInputLayout>

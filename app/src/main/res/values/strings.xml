@@ -7,6 +7,7 @@
     <string name="weight_Weight">180.0</string>
     <string name="weight_PlusMinus">+0.0</string>
     <string name="image_of_scale">Image of Scale</string>
+    <string name="SMS">Turn SMS notifications on</string>
 
 
     <string-array name="dates">

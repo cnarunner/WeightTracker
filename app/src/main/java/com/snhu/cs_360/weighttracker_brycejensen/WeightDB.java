@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class WeightDB extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "WeightTracker.db";
 
     // Weights table
@@ -34,7 +34,9 @@ public class WeightDB extends SQLiteOpenHelper{
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Handle database upgrades if needed
+        db.execSQL("drop table if exists " + TABLE_WEIGHTS);
+
+        onCreate(db);
     }
 
 }

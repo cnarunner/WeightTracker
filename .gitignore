@@ -17,3 +17,4 @@ gradlew
 gradlew.bat
 .idea
 gradle
+.vscode/settings.json

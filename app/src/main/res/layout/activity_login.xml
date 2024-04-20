@@ -72,11 +72,6 @@
                 android:alpha="0.7"
                 android:layout_marginBottom="32dp"/>
 
-<!--            <TextView-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Email Address"-->
-<!--                android:textColor="@color/dark_grey_blue"/>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/username_text_input_layout"
@@ -131,19 +126,20 @@
                 android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_login"
+                    android:id="@+id/button_createAccountActivity"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:text="Login"
                     android:layout_marginEnd="10dp"
+                    android:text="Create account"
                     android:textColor="@color/dark_grey_blue"
                     app:cornerRadius="32dp" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/button_createAccountActivity"
+                    android:id="@+id/button_login"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:text="Create account"
+                    android:layout_marginEnd="10dp"
+                    android:text="Login"
                     android:textColor="@color/dark_grey_blue"
                     app:cornerRadius="32dp" />
 

@@ -3,21 +3,27 @@ package com.snhu.cs_360.weighttracker_brycejensen;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.Manifest;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,11 +62,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     // Calendar Stuff
     private Calendar initialDate;
 
-    // For fake data
+    // For data
     private ArrayList<WeightModel> weightModels = new ArrayList<>();
     private Weight_RecyclerViewAdapter adapter;
     private WeightDAO weightDAO;
     private String loggedInUsername;
+
+    // For settings
+    private SwitchMaterial switchSMS;
+    private EditText etPhoneNum;
+    private NotificationsSMS notificationsSMS;
+    private static final int REQUEST_SEND_SMS_PERMISSION = 1;
+
+    // For goal
+    private EditText etTargetWeight;
+    private MaterialButton btn_submitGoal;
+    private String targetWeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +98,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             loggedInUsername = intent.getStringExtra("username");
         }
 
-
         weightDAO = new WeightDAO(this);
+
+        DBHelper dbHelper = new DBHelper(this);
+        targetWeight = dbHelper.getTargetWeight(loggedInUsername);
 
         RecyclerView recyclerView = findViewById(R.id.recyclerWeightData);
 
@@ -94,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-
         // For add weight popup
         FAB_addWeight = findViewById(R.id.FABaddWeight);
         FAB_addWeight.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         // For addWeight and editWeight
         initialDate = Calendar.getInstance();
+
+        notificationsSMS = new NotificationsSMS(this);
     }
 
     public void showAddWeightDialog() {
@@ -169,6 +190,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         newWeight.calculatePlusMinus(weightModels, weightModels.size() - 1);
         for (int i = weightModels.size() - 1; i < weightModels.size(); i++) {
             weightModels.get(i).calculatePlusMinus(weightModels, i);
+        }
+
+        if (Double.parseDouble(newWeight.getWeight_Weight()) <= Double.parseDouble(targetWeight)) {
+            DBHelper dbHelper = new DBHelper(this);
+            String phoneNumber = dbHelper.getPhoneNumber(loggedInUsername);
+            String message = "Congratulations! You have reached your weight goal of " + targetWeight + " lbs.";
+            sendSMSNotification(phoneNumber, message);
         }
 
         // Update the RecyclerView adapter with the new list
@@ -264,8 +292,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
                 loadWeightsFromDatabase();
 
-                // Notify the RecyclerView adapter about the data change
-                //adapter.notifyItemChanged(position);
                 editWeightDialog.dismiss();
                 String weightText = edit_etWeight.getText().toString();
                 Toast.makeText(MainActivity.this, "Weight Updated: " + weightText, Toast.LENGTH_LONG).show();
@@ -287,6 +313,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                  // Update the "plus minus" values for the remaining weights
                  for (int i = deletedIndex; i < weightModels.size(); i++) {
                      weightModels.get(i).calculatePlusMinus(weightModels, i);
+
                  }
 
                  loadWeightsFromDatabase();
@@ -304,30 +331,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         openCalendarDialog(dateToEdit, edit_tvDate);
     }
 
-//    private void setUpWeightModels() {
-//        String[] weights = getResources().getStringArray(R.array.weights);
-//        String[] dates = getResources().getStringArray(R.array.dates);
-//        List<WeightModel> weightModelList = new ArrayList<>();
-//
-//        for (int i = 0; i < weights.length; i++) {
-//            String weight = weights[i];
-//            String date = dates[i];
-//            WeightModel weightModel = new WeightModel(weight, date);
-//
-//            if (i > 0) {
-//                double currentWeight = Double.parseDouble(weight);
-//                double previousWeight = Double.parseDouble(weightModels.get(i - 1).getWeight_Weight());
-//                double difference = currentWeight - previousWeight;
-//                String plusMinus = difference > 0 ? "+" + String.format("%.1f", difference) : String.format("%.1f", difference);
-//                weightModel.setWeight_PlusMinus(plusMinus);
-//            } else {
-//                weightModel.setWeight_PlusMinus("+0.0");
-//            }
-//
-//            weightModels.add(weightModel);
-//
-//        }
-//    }
 
     private void loadWeightsFromDatabase() {
         weightModels.clear(); // Clear the existing list
@@ -372,9 +375,45 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 // Open settings dialog
                 showSettingsDialog();
                 return true;
+
+            case "Goal Weight":
+                showGoalDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showGoalDialog() {
+        Dialog goalDialog = new Dialog(this, R.style.DialogStyle);
+        goalDialog.setContentView(R.layout.fragment_goal_weight);
+
+        etTargetWeight = goalDialog.findViewById(R.id.editText_GoalWeight);
+
+        // Get the target weight from the database and set it in the EditText
+        DBHelper dbHelper = new DBHelper(this);
+        String targetWeightFromDB = dbHelper.getTargetWeight(loggedInUsername);
+        if (targetWeightFromDB != null) {
+            etTargetWeight.setText(targetWeightFromDB);
+        }
+
+        btn_submitGoal = goalDialog.findViewById(R.id.button_SubmitGoal);
+        btn_submitGoal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitGoalWeight(etTargetWeight.getText().toString());
+                goalDialog.dismiss();
+            }
+        });
+        goalDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        goalDialog.show();
+    }
+
+    private void submitGoalWeight(String targetWeight) {
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.updateTargetWeight(loggedInUsername, targetWeight);
+        // Update the local targetWeight variable
+        this.targetWeight = targetWeight;
     }
 
     private void logoutUser() {
@@ -386,13 +425,100 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     }
 
     private void showSettingsDialog() {
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.fragment_settings);
+        Dialog settingsDialog = new Dialog(this, R.style.DialogStyle);
+        settingsDialog.setContentView(R.layout.fragment_settings);
 
+        // Initialize the EditText view
+        etPhoneNum = settingsDialog.findViewById(R.id.editPhoneNum);
 
+        // Get the phone number from the database and set it in the EditText
+        DBHelper dbHelper = new DBHelper(this);
+        String phoneNumber = dbHelper.getPhoneNumber(loggedInUsername);
+        etPhoneNum.setText(phoneNumber);
 
-        dialog.show();
+        // Get the text from the EditText (if needed)
+        phoneNumber = etPhoneNum.getText().toString();
+        dbHelper.updatePhoneNumber(loggedInUsername, phoneNumber);
+
+        // Initialize the SwitchMaterial view
+        switchSMS = settingsDialog.findViewById(R.id.switch_SMS);
+        switchSMS.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onSwitchChecked(isChecked);
+            }
+        });
+
+        settingsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        settingsDialog.show();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_SEND_SMS_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, you can send SMS
+                switchSMS.setChecked(true); // Enable the switch
+                Toast.makeText(this, "SMS permission granted", Toast.LENGTH_SHORT).show();
+            } else {
+                // Permission denied
+                switchSMS.setChecked(false); // Disable the switch
+                Toast.makeText(this, "SMS permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    private void sendSMSNotification(String phoneNumber, String message) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+            if (switchSMS.isChecked()) {
+                String formattedPhoneNumber = formatPhoneNumber(phoneNumber);
+                notificationsSMS.sendSMS(formattedPhoneNumber, message);
+            }
+        } else {
+            // Request the SMS permission
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, REQUEST_SEND_SMS_PERMISSION);
+        }
+    }
+
+    private String formatPhoneNumber(String phoneNumber) {
+        // Remove any non-digit characters from the phone number
+        phoneNumber = phoneNumber.replaceAll("[^\\d]", "");
+
+        // Check if the phone number starts with a country code (e.g., +1)
+        if (phoneNumber.length() > 10) {
+            // Phone number already has a country code, return it as is
+            return phoneNumber;
+        } else {
+            // Prepend the US country code (+1) to the phone number
+            return "+1" + phoneNumber;
+        }
+    }
+
+    public void onSwitchChecked(boolean isChecked) {
+        if (isChecked) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+                // Permission already granted, you can send SMS
+                DBHelper dbHelper = new DBHelper(this);
+                String phoneNumber = dbHelper.getPhoneNumber(loggedInUsername);
+                String message = "You just subscribed to Goals for WeightTracker! Welcome! \n We will text you when you reach your goal! \n Good luck!";
+                sendSMSNotification(phoneNumber, message);
+            } else {
+                // Request the SMS permission
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, REQUEST_SEND_SMS_PERMISSION);
+
+            }
+        }
+    }
+
+//    private void onUpdatePhoneNumber(String phoneNumber) {
+//        DBHelper dbHelper = new DBHelper(this);
+//        phoneNumber = dbHelper.getPhoneNumber(loggedInUsername);
+//        String message = "You just subscribed to Goals for WeightTracker! Welcome! \n We will text you when you reach your goal! \n Good luck!";
+//        sendSMSNotification(phoneNumber, message);
+//    }
+
 
     @Override
     public void onItemClick(int position) {

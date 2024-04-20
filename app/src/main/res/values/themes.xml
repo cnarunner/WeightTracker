@@ -10,14 +10,14 @@
         <item name="colorSecondary">@color/blue</item>
         <item name="colorSecondaryVariant">@color/blue</item>
         <!-- Customize colorSecondary to change icon/text of FAB (maps to tint and rippleColor) -->
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
 
         <item name="android:statusBarColor">@android:color/holo_blue_dark</item>
     </style>
 
     <style name="Theme.WeightTrackerBryceJensen" parent="Base.Theme.WeightTrackerBryceJensen"/>
 
-    <style name="DialogStyle" parent="Theme.Material3.DayNight.Dialog">
+    <style name="DialogStyle" parent="Theme.MaterialComponents.DayNight.Dialog">
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>

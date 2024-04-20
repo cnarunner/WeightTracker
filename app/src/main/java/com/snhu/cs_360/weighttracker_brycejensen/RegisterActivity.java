@@ -14,6 +14,7 @@ import com.google.android.material.button.MaterialButton;
 public class RegisterActivity extends AppCompatActivity {
     EditText etUsername;
     EditText etPassword;
+    //EditText etPhoneNumber;
     EditText etRetypePassword;
     MaterialButton btnCreateAccount;
     MaterialButton btnGoToLogin;
@@ -25,6 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         etUsername = findViewById(R.id.editTextCreateUsername);
         etPassword = findViewById(R.id.editTextCreatePassword);
+        //etPhoneNumber = findViewById(R.id.editTextPhoneNumber);
         etRetypePassword = findViewById(R.id.editTextRetypePassword);
 
         btnGoToLogin = findViewById(R.id.button_alreadyHaveAccount);
@@ -43,10 +45,12 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username;
                 String password;
+                //String phoneNumber;
                 String retypePassword;
 
                 username = etUsername.getText().toString();
                 password = etPassword.getText().toString();
+
                 retypePassword = etRetypePassword.getText().toString();
 
                 if (username.isEmpty()) {
@@ -65,6 +69,13 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this, "Account Created Successfully", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             intent.putExtra("username", username);
+                            startActivity(intent);
+
+                            // Get the phone number from the EditText (if provided)
+                            //phoneNumber = etPhoneNumber.getText().toString();
+
+                            // Store the phone number in the database
+                            //dbHelper.updatePhoneNumber(username, phoneNumber);
                             startActivity(intent);
                         } else {
                             Toast.makeText(RegisterActivity.this, "Account Creation Failed", Toast.LENGTH_SHORT).show();

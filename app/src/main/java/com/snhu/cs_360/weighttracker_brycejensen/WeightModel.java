@@ -67,6 +67,7 @@ public class WeightModel {
         } else {
             this.weight_PlusMinus = "+0.0";
         }
+
     }
 
 }
