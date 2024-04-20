@@ -97,4 +97,12 @@ public class DBHelper extends SQLiteOpenHelper {
         db.close();
         return phoneNumber;
     }
+
+    public void deleteUser(String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selection = "username = ?";
+        String[] selectionArgs = {username};
+        db.delete("users", selection, selectionArgs);
+        db.close();
+    }
 }

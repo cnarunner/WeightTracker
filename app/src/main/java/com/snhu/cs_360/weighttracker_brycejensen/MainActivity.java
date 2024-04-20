@@ -448,6 +448,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 onSwitchChecked(isChecked);
             }
         });
+        WeightDAO weightDAO = new WeightDAO(this);
+        deleteUser = settingsDialog.findViewById(R.id.button_EraseEverything);
+        deleteUser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                weightDAO.deleteAllWeightsForUser(loggedInUsername);
+                dbHelper.deleteUser(loggedInUsername);
+                logoutUser();
+            }
+        });
 
         settingsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         settingsDialog.show();
@@ -511,13 +521,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             }
         }
     }
-
-//    private void onUpdatePhoneNumber(String phoneNumber) {
-//        DBHelper dbHelper = new DBHelper(this);
-//        phoneNumber = dbHelper.getPhoneNumber(loggedInUsername);
-//        String message = "You just subscribed to Goals for WeightTracker! Welcome! \n We will text you when you reach your goal! \n Good luck!";
-//        sendSMSNotification(phoneNumber, message);
-//    }
 
 
     @Override

@@ -64,4 +64,10 @@ public class WeightDAO {
         cursor.close();
         return weightList;
     }
+
+    public void deleteAllWeightsForUser(String username) {
+        String selection = WeightDB.COLUMN_USERNAME + " = ?";
+        String[] selectionArgs = {username};
+        database.delete(WeightDB.TABLE_WEIGHTS, selection, selectionArgs);
+    }
 }
