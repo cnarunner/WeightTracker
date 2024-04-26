@@ -8,14 +8,28 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The WeightDAO class provides methods for interacting with the SQLite database
+ * to perform CRUD (Create, Read, Update, Delete) operations on weight entries.
+ */
 public class WeightDAO {
     private SQLiteDatabase database;
 
+    /**
+     * Constructor for the WeightDAO class.
+     *
+     * @param context The application context.
+     */
     public WeightDAO(Context context) {
         WeightDB dbHelper = new WeightDB(context);
         database = dbHelper.getWritableDatabase();
     }
 
+    /**
+     * Inserts a new weight entry into the database.
+     *
+     * @param weight The WeightModel object containing the weight entry data.
+     */
     public void insert(WeightModel weight) {
         // Insert a new weight entry
         ContentValues values = new ContentValues();
@@ -27,6 +41,11 @@ public class WeightDAO {
         database.insert(WeightDB.TABLE_WEIGHTS, null, values);
     }
 
+    /**
+     * Updates an existing weight entry in the database.
+     *
+     * @param weight The WeightModel object containing the updated weight entry data.
+     */
     public void update(WeightModel weight) {
         // Update an existing weight entry
         ContentValues values = new ContentValues();
@@ -36,11 +55,21 @@ public class WeightDAO {
         database.update(WeightDB.TABLE_WEIGHTS, values, WeightDB.COLUMN_ID + " = ?", new String[]{String.valueOf(weight.getWeight_Id())});
     }
 
+    /**
+     * Deletes a weight entry from the database based on its ID.
+     *
+     * @param id The ID of the weight entry to be deleted.
+     */
     public void delete(int id) {
         // Delete a weight entry by id
         database.delete(WeightDB.TABLE_WEIGHTS, WeightDB.COLUMN_ID + " = ?", new String[]{String.valueOf(id)});
     }
-
+    
+    /**
+     * Retrieves all weight entries from the database, ordered by date in descending order.
+     *
+     * @return A list of WeightModel objects representing the weight entries.
+     */
     public List<WeightModel> getAllWeights() {
         // Retrieve all weight entries
         List<WeightModel> weightList = new ArrayList<>();
@@ -65,9 +94,15 @@ public class WeightDAO {
         return weightList;
     }
 
+    /**
+     * Deletes all weight entries for a given username from the database.
+     *
+     * @param username The username for which all weight entries should be deleted.
+     */
     public void deleteAllWeightsForUser(String username) {
         String selection = WeightDB.COLUMN_USERNAME + " = ?";
         String[] selectionArgs = {username};
         database.delete(WeightDB.TABLE_WEIGHTS, selection, selectionArgs);
     }
 }
+
